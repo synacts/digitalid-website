@@ -11,7 +11,7 @@ subtitle: Learn about the most recent Digital ID developments
 {% for post in paginator.posts %}
 <h3 class="post-title"><a href="{{ post.url | relative_url }}">{{ post.title | escape }}</a></h3>
 <p class="post-meta">by {{ post.author.name }} on {{ post.date | date: site.date_format }}</p>
-<p class="post-excerpt">{{ post.excerpt | strip_html }}</p>
+<p class="post-excerpt">{{ post.excerpt }}</p>
 {% endfor %}
 
 {% if paginator.total_pages > 1 %}

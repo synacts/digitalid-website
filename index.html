@@ -1,0 +1,36 @@
+---
+title: Overview
+layout: plain
+---
+
+<h2>Digital ID – an Identity Layer for the Internet</h2>
+
+<p>
+Digital ID is an identity layer for the internet and a domain name system for personal information.
+It allows you to prove your identity towards other users and to look up their attributes in a decentralized manner.
+The ultimate goal of Digital ID is to replace closed platforms with open standards – one service at a time.
+</p>
+
+<p style="text-align: center; margin-top: 32px;"><img src="{{ site.baseurl }}/assets/graphics/explanations/protocol.svg" alt="Digital ID Protocol" style="max-width: 600px;"></p>
+
+<div class="row">
+<div class="col-md-7">
+
+<h3>Recent News</h3>
+
+{% for post in site.posts limit:2 %}
+<h3 class="post-title"><a href="{{ post.url | relative_url }}">{{ post.title | escape }}</a></h3>
+<p class="post-meta">by {{ post.author.name }} on {{ post.date | date: site.date_format }}</p>
+<p class="post-excerpt">{{ post.excerpt | strip_html | strip_newlines }}</p>
+{% endfor %}
+
+<p style="margin-top: 24px;"><a href="{% link news/index.html %}">Read older news</a></p>
+
+</div>
+<div class="col-md-5">
+
+<a class="twitter-timeline" data-theme="light" data-link-color="#2C3E50" href="https://twitter.com/IdentityLayer" data-chrome="nofooter noborders">Tweets by IdentityLayer</a>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+</div>
+</div>

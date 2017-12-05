@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <title>{{ site.title }} {{ page.title }}</title>
+        <meta name="description" content="{{ page.excerpt | default: site.description | strip_html | normalize_whitespace | truncate: 160 | escape }}">
+        
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ "/assets/favicons/apple-touch-icon.png" | relative_url }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ "/assets/favicons/favicon-32x32.png" | relative_url }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ "/assets/favicons/favicon-16x16.png" | relative_url }}">
+        <link rel="mask-icon" href="{{ "/assets/favicons/safari-pinned-tab.svg" | relative_url }}" color="#be0200">
+        <link rel="shortcut icon" href="{{ "/assets/favicons/favicon.ico" | relative_url }}">
+        <link rel="manifest" href="{{ "/assets/favicons/manifest.json" | relative_url }}">
+        <meta name="msapplication-config" content="{{ "/assets/favicons/browserconfig.xml" | relative_url }}">
+        <meta name="apple-mobile-web-app-title" content="{{ site.title }}">
+        <meta name="application-name" content="{{ site.title }}">
+        <meta name="theme-color" content="#ffffff">
+        
+        <link rel="canonical" href="{{ page.url | replace:'index.html','' | absolute_url }}">
+        <link rel="alternate" type="application/rss+xml" title="{{ site.title | escape }}" href="{{ "/feed.xml" | relative_url }}">
+        
+        <link rel="stylesheet" href="{{ "/assets/styles/digitalid.min.css" | relative_url }}"/>
+        <link rel="stylesheet" href="{{ "/assets/styles/digitalid.toc.css" | relative_url }}"/>
+        <link rel="stylesheet" href="{{ "/assets/styles/monokai.css" | relative_url }}"/>
+        <!-- TODO: Build a better syntax highlighting theme at http://jwarby.github.io/jekyll-pygments-themes/builder.html. -->
+        
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v0.4.1/dist/bootstrap-toc.min.js"></script>
+        <script src="{{ "/assets/scripts/scrolling.js" | relative_url }}"></script>
+        
+        {% if jekyll.environment == 'production' and site.google_analytics %}
+        {% include google-analytics.html %}
+        {% endif %}
+    </head>
+    <body data-spy="scroll" data-target="#toc">
+        
+        <div class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a href="{% link index.html %}" class="navbar-brand">{{ site.title }}</a>
+                    <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div class="navbar-collapse collapse" id="navbar-main">
+                    <ul class="nav navbar-nav">
+                        {% assign tabs = site.pages | where_exp: "tab", "tab.order" | sort: "order" %}{% for tab in tabs limit:6 %}
+                        <li class="{% if tab.url == page.url %}active{% endif %}" title="{{ tab.subtitle }}"><a href="{{ tab.url }}">{% if tab.icon %}<span class="glyphicon glyphicon-{{ tab.icon }} hidden-sm"></span>{% endif %}<span>{{ tab.title }}</span></a></li>
+                        {% endfor %}
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li title="Follow us on Twitter for the latest news"><a href="https://twitter.com/IdentityLayer" target="_blank"><span class="glyphicon">{% include icon-twitter.svg %}</span><span class="hidden-sm hidden-md">Twitter</span></a></li>
+                        <li title="See and contribute to our code on GitHub"><a href="https://github.com/synacts" target="_blank"><span class="glyphicon">{% include icon-github.svg %}</span><span class="hidden-sm hidden-md">GitHub</span></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container">
+            {{ content }}
+        </div>
+        
+    </body>
+</html>

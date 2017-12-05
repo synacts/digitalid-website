@@ -1,0 +1,11 @@
+---
+layout: main
+---
+
+<div class="row">
+    <div class="col-md-10 col-lg-9">
+        <h2>{{ page.title | escape }}</h2>
+        <p class="post-meta">by <a href="mailto:{{ page.author.mail }}">{{ page.author.name }}</a> on {{ page.date | date: site.date_format }}</p>
+        {{ content }}
+    </div>
+</div>

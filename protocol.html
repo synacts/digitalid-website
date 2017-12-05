@@ -1,0 +1,1906 @@
+---
+order: 2
+icon: transfer
+title: Protocol
+subtitle: A domain name system for personal information
+---
+
+<div id="content">
+<div class="sect1">
+<h2 id="_introduction">1. Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Digital ID is a protocol that constitutes an open identity layer for the
+Internet and a lookup layer for personal information. It allows you to prove
+your identity towards others and to look up attributes of others in a
+decentralized manner. Being freely extensible with services, Digital ID aims to
+supersede proprietary platforms by establishing a framework of open standards.</p>
+</div>
+<div class="paragraph">
+<p>The Digital ID protocol is an internet identity protocol that enables
+decentralized hosting of user attributes. It implements a permission system to
+allow attribute provisioning for authorized services and users.</p>
+</div>
+<div class="paragraph">
+<p>Digital ID aims to solve the following problems:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Many-accounts</strong>: The technology behind the web was designed to allow easy
+access to openly available documents, which did not require any accounts at all.
+However, today the web consists mainly of (semi-)private services, such as
+social media and online banking, which require identification, authentication and
+authorization of users. As a result, today&#8217;s users have to deal with more than
+90 accounts, on average. Identity federation is one possible solution for
+tackling the many-accounts problem.</p>
+</li>
+<li>
+<p><strong>Weak passwords</strong>: The password problem
+goes along with the accounts problem. Users are still using weak passwords and
+repeated passwords.  More secure technologies, such as client-certificate
+authentication, exist, but are not widely used and not very user friendly in
+Browsers, yet.  In Digital ID, there is no need for passwords, because just like
+client-certificates, we&#8217;re making use of cryptographic algorithms and protocols
+to authenticate an identity.  At the same time, we focus on usability, to avoid
+the mistakes made with client-certificate authentication.</p>
+</li>
+<li>
+<p><strong>Untrusted Identity Hosts</strong>: Looking at today&#8217;s offers on identity federations
+on the web, Facebook and Google are at the top of the list. However, if users
+use their convenient identity federation services, it comes at a price: The
+corporations that operate the identity provider, learn about what services a
+user uses whenever the user logs in. This is usually not desirable and
+sometimes a concern for privacy.
+Furthermore, since Digital ID has a decentralized design, user data can be
+hosted on any server in any country. Even self-hosting is possible.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This specification gives an overview of how the internals of Digital ID work.
+Different profiles have been designed to cover common identity use cases, some
+of them are based on the existing protocols OpenID Connect and SAML 2.0.</p>
+</div>
+<div class="sect2">
+<h3 id="_requirements_notation_and_conventions" data-toc-text="1.1. Requirements">1.1. Requirements Notation and Conventions</h3>
+<div class="paragraph">
+<p>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this
+document are to be interpreted as described in RFC 2119 [RFC2119].</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_features">2. Features</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For an easier understanding on whether the Digital ID protocol fits your needs, we cover a couple of features in this chapter.</p>
+</div>
+<div class="sect2">
+<h3 id="_password_less_login">2.1. Password-less Login</h3>
+<div class="paragraph">
+<p>The major design problem on the web is that we often use passwords to authenticate ourselves.
+Here is an incomplete list of what is wrong about password authentication:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Doesn&#8217;t scale well</strong>: With 90 accounts on average per user, we need 90
+different, difficult-to-guess passwords. However, most users are not willing to
+choose a different password for each account. It would simply be too difficult
+to remember all of them. Therefore, clever users use password managers, but the
+average user either uses a simple password or re-uses an existing password (or
+both).</p>
+</li>
+<li>
+<p><strong>Trusting the server</strong>: This leads to another major problem: We need to trust
+the service provider, where we created the account at, to store our passwords
+in a reliable and secure way, and not try to log in at our online banking
+platform with the same credentials.</p>
+</li>
+<li>
+<p><strong>Social engineering and phishing</strong>: Even if the server we are talking to is
+reliable, attackers have a simple game: If they do not guess or brute-force the
+password of a user account, they can try to trick the user into typing it into
+a fake website. The world wide economic impact of phishing is as much as US$5
+billion, according to the 2013 Microsoft Computing Safety Index.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>With today&#8217;s knowledge in cryptography, we do, however, have a more-secure
+alternative to passwords.  The Digital ID protocol is therefore abstaining from
+the use of passwords, and instead uses digital signatures to securely identify
+a client, and thereby the user who operates the client.  How a user
+authenticates against a client is not specified, because it largely depends on
+the type of client, e.g., a mobile phone with a fingerprint sensor can support
+unlocking of a client using fingerprint authentication.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_decentralized_hosting_of_identities" data-toc-text="2.2. Decentralized Host.">2.2. Decentralized Hosting of Identities</h3>
+<div class="paragraph">
+<p>When using a centralized identity provider, a group of users has to agree upon
+the identity provider. This is the case for logins on the web, where the
+network-effect usually decides who the identity provider is (see Facebook and
+Google Login). In a company environment, or in an environment where using
+Facebook or Google accounts is simply not appropriate (i.e. eHealth,
+eGovernment, online banking, etc.), choosing a single identity provider is often
+a question of politics.</p>
+</div>
+<div class="paragraph">
+<p>With the Digital ID protocol, this decision is left to the users. Similar to
+the email protocol, a user may decide in which country and with which provider
+he or she wants to store his or her data. Yet, as long as the service provider
+supports the Digital ID protocol, data can be fetched in a secure manner from
+the Digital ID identity provider and transferred to a Digital ID client.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_identity_federation">2.3. Identity Federation</h3>
+<div class="paragraph">
+<p>One potential solution for the password problem is to use existing accounts and
+federate them to another account. When using a pure Digital ID solution,
+federation is not necessary, because the identity is already part of the
+protocol.</p>
+</div>
+<div class="paragraph">
+<p>Fetching identity attributes is another feature which is usually part of identity
+federation. We cover this in the next paragraph.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_user_consent_and_permission_clearance" data-toc-text="2.4. User Consent">2.4. User Consent and Permission Clearance</h3>
+<div class="paragraph">
+<p>In essence, instead of federating identity attributes to service providers, users
+can give permission to service providers to synchronize identity attributes from their
+Digital ID hosts. This also allows offline access and automatic updates, because once
+user consent is given, no more user interaction is necessary.</p>
+</div>
+<div class="paragraph">
+<p>In comparison to typical identity federation protocols such as SAML and OpenID
+Connect, Digital ID also allows users to give access to any identities, not just
+platform operators. This means that data can be exchanged between different users
+directly.</p>
+</div>
+<div class="paragraph">
+<p>Access to identity attributes can either be made public to everyone, or
+permission can be granted to a context. A context can consist of a single identifier,
+multiple identifiers or a hierarchy of other contexts.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_attribute_based_access_control" data-toc-text="2.5. Attribute-Based AC">2.5. Attribute-Based Access Control</h3>
+<div class="paragraph">
+<p>Taking one step further, with the Digital ID protocol, permission to identity
+attributes can be restricted to identities with specific attributes.
+This means that people or services who should have access to identity attributes do
+not have to be listed explicitly. In combination with verified attributes, rules
+such as <em>"only accessible for people who work at company X"</em> are a great method for
+ensuring that only authorized users are able to access data, while reducing the
+identity management overhead.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_account_synchronization" data-toc-text="2.6. Account Synchroniz.">2.6. Account Synchronization</h3>
+<div class="paragraph">
+<p>Users have, on average, 90 accounts, which need to be managed and updated whenever
+attributes change. This is a cumbersome, manual process, and it likely leads to
+outdated account data.</p>
+</div>
+<div class="paragraph">
+<p>The same problem also exists for service providers, who once federated identity
+attributes of a user into their system. For example, for service providers to
+target their market segment well, they need to know if a potential customer
+moved to a new address.</p>
+</div>
+<div class="paragraph">
+<p>To mitigate this problem, the Digital ID protocol supports automated account
+synchronization.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_anonymous_authentication" data-toc-text="2.7. Anonymous Authent.">2.7. Anonymous Authentication</h3>
+<div class="paragraph">
+<p>Digital ID was build according to the privacy by design principle. This means
+that neither the identity provider needs to know with which Digital ID host the
+user communicates, nor that the Digital ID host needs to know who the identity
+is, but only if it has certain attributes.</p>
+</div>
+<div class="paragraph">
+<p>To achieve this, the Digital ID protocol makes use of an anonymous credential
+system to proof correctness of attributes towards another Digital ID host.
+With anonymous credentials, the user may transmits a credential, signed by the
+identity provider, to convince the verifying Digital ID host that her
+attributes satisfy certain properties. This has the obvious advantage that the
+verifier can no longer reuse the credential to impersonate Alice. Another
+advantage is that anonymous credentials allow the user to reveal a selected
+subset of her attributes.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_verification_and_validation_of_attributes" data-toc-text="2.8. Attribute Validation">2.8. Verification and Validation of Attributes</h3>
+<div class="paragraph">
+<p>Credentials can be signed not just by the identity provider itself, but by any
+other Digital ID host as well. Digital ID is therefore predestined to, not just
+host attributes in a decentralized manner, but also to have multiple
+decentralized verification providers who are capable of verifying user
+attributes and issuing credentials to the Digital ID client.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_hosting">3. Hosting</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Digital ID protocol is designed as a client-server model with a
+decentralized server architecture that allows users to choose their Digital ID
+host, e.g., for their location or trust towards the host.  The architecture
+resembels the E-Mail protocol, in which users MAY choose their own provider and
+can communicate with users that choose other providers.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="{{ site.baseurl }}/assets/graphics/communication/user_choses_server.svg" alt="user choses server">
+</div>
+</div>
+<div class="paragraph">
+<p>A service (that is, the process running the Digital ID software) MAY
+accommodate several Digital ID hosts with each being denoted by a different
+domain name.</p>
+</div>
+<div class="sect2">
+<h3 id="_identifiers">3.1. Identifiers</h3>
+<div class="paragraph">
+<p>Digital ID identifiers MUST BE unique identifiers of the form &lt;user&gt;@&lt;host&gt;. A
+identity&#8217;s location is therefore determined using the host part of a Digital ID
+identifier. A client interested in identity attributes of a certain Digital ID
+identity, requests the Digital ID host that is referenced in its identifier.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_connection">3.2. Connection</h3>
+<div class="paragraph">
+<p>The Digital ID protocol is an application layer protocol on top of TCP.
+Following the client-server model, the recipient of a request MUST always be a host,
+which returns a response to the requester and closes the TCP connection.</p>
+</div>
+<div class="paragraph">
+<p>When creating a Digital ID host, a subdomain "id.&lt;domain&gt;.&lt;tld&gt;" MUST be
+registered and point to the IP address of the server that runs the Digital ID
+server. The socket port MUST be set to {{ site.data.protocol.port }}.</p>
+</div>
+<div class="paragraph">
+<p>Hosts MUST sign responses with 2048-bit RSA and encrypt with 192-bit AES. Since
+requests are always initiated by clients, the client MUST choose an AES symmetric
+key, which is encrypted with the 2048-RSA public key of the host and send along
+with the request.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_identity_creation">3.3. Identity Creation</h3>
+<div class="paragraph">
+<p>The creation of a Digital ID identity is performed by creating an initial
+client that claims a unique identifier.  The initial client is fully authorized
+at the Digital ID host and can subsequently accredit other clients.</p>
+</div>
+<div class="paragraph">
+<p>Since the purpose of identifiers is to identify Digital ID identities, it is
+not allowed to ever reassign them, even if the domain changes hands. In this
+sense, deleting a Digital ID identity is not possible, you can only stop using
+it.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_trusting_a_digital_id_host" data-toc-text="3.4. Trusting a DID Host">3.4. Trusting a Digital ID Host</h3>
+<div class="sect3">
+<h4 id="_public_key_infrastructure">3.4.1. Public Key Infrastructure</h4>
+<div class="paragraph">
+<p>Every host MUST create a public key that MUST be certified as part of the public key
+infrastructure.  To reduce the risk of having false certificates issued, we do
+not want to specify too many root certificates. Therefore, the only accepted
+root certificate authority, at the moment, is digitalid.net.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_auditing_and_liability">3.4.2. Auditing and Liability</h4>
+<div class="paragraph">
+<p>To reduce the trust required from users, hosts need to log all actions of
+clients which have an effect on the state of a Digital ID identity. They are
+liable for all actions that they cannot trace to one of the clients accredited
+by the user.  Due to the credentials' limited validity period of one hour (see
+Section X), such evidence MUST be stored for only one year. The liability of
+hosts themselves is limited to two years after the time of signing, due to the
+maximum attributes caching period of one year (see Section X).</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="host-architecture">3.5. Host Architecture</h3>
+<div class="paragraph">
+<p>A Digital ID host has a layered architecture that consists of a connection, authorization,
+controller, model and persistence layer. The layers are described in the following:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="{{ site.baseurl }}/assets/graphics/explanations/library_structure.svg" alt="Digital ID Host Layers" width="500">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Connection Layer</strong>: Receives encrypted requests, decrypts them and verifies
+their signature to retrieve the identity of the requester. Replies are signed by the host and
+encrypted with the symmetric key that was received in the request.
+Signing a request is optional, which means that anonymous requests are possible.</p>
+</li>
+<li>
+<p><strong>Authorization Layer</strong>: Checks whether a change or retrieval of a state is permitted.
+The actions and queries in the controller layer specify which permissions they require and which
+restrictions they have.</p>
+</li>
+<li>
+<p><strong>Controller Layer</strong>: Defines what should be done with the request. The controller layer consists
+of actions and queries that can change or retrieve a state of an identity for the requesting agent.</p>
+</li>
+<li>
+<p><strong>Audit Service</strong>: Is responsible of auditing every change and retrieval executed in the controller layer.</p>
+</li>
+<li>
+<p><strong>Model Layer</strong>: Consists of subjects that are associated with an identity and have
+properties that are synchronized across (authorized) clients, e.g., attributes, settings, agents,
+certificates and contacts.</p>
+</li>
+<li>
+<p><strong>Persistence Layer</strong>: Stores and retrieves subjects of the model layer from and into a relational
+database.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_clients">4. Clients</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Digital ID clients are the agents that send requests to Digital ID hosts. In
+comparison to a browser, a Digital ID client is a so called thick client, which
+provides rich functionality independent of a server.  This means that, in
+contrast to web browsers, Digital ID clients never run untrusted code
+downloaded from a server and therefore are not vulnerable to security issues
+such as cross-site scripting and cross-site request forgery.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="{{ site.baseurl }}/assets/graphics/explanations/thin_vs_thick_client.svg" alt="thin vs thick client" width="500">
+</div>
+</div>
+<div class="sect2">
+<h3 id="_accreditation">4.1. Accreditation</h3>
+<div class="paragraph">
+<p>Before being able to act on your behalf, Digital ID clients need to be
+accredited at your Digital ID host. This is done by registering their public
+key together with their preferred authorization at the Digital ID host. Only
+the first client is authorized automatically. Further clients of the same
+identity MUST be authorize by a previously created, sufficiently authorized
+client.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="{{ site.baseurl }}/assets/graphics/communication/user_registers_new_client.svg" alt="user registers new client" width="500">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_client_architecture">4.2. Client Architecture</h3>
+<div class="paragraph">
+<p>Digital ID allows to execute actions and queries locally and to synchronize them
+to the host at a later time, which enables offline usage. Therefore, the
+architecture of a Digital ID client looks like the <a href="#host-architecture">host architecture</a> and can
+(and probably should) be combined into the same code base.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_authentication_authorization" data-toc-text="5. Authentication">5. Authentication &amp; Authorization</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In contrast to other identity federation protocol, the Digital ID protocol specifies how clients must be authenticated.
+This ensures that the authentication has a proper level of security, which is considered important to prevent identity and data theft.</p>
+</div>
+<div class="sect2">
+<h3 id="_client_authentication_towards_own_digital_id_identity" data-toc-text="5.1. Towards own DID">5.1. Client Authentication towards own Digital ID Identity</h3>
+<div id="client-authentication-towards-own-Digital-ID-Identity" class="paragraph">
+<p>The identity provider must authenticate and authorize its clients before
+allowing to manage the identity attributes or issuing credentials.</p>
+</div>
+<div class="paragraph">
+<p>In Digital ID, the client authenticates itself using the Schnorr signature
+scheme, which is based on the discrete logarithm problem. Mathematically
+speaking, a client has to convince the host that it knows the discrete
+logarithm of some value <strong>f</strong> to base <strong>a</strong>, denoted as <strong>u</strong> (i.e. <strong>f = a<sup>u</sup></strong>),
+without transmitting <strong>u</strong>. <strong>f</strong> denotes the public key of the client.</p>
+</div>
+<div class="paragraph">
+<p>To create a key pair, a base <strong>a</strong> must be chosen by the server, which can be the
+same for all clients of a host.  This number is published and therefore part of
+the public key.</p>
+</div>
+<div class="paragraph">
+<p>To create a public/private key pair, a random value <strong>r</strong> is chosen and <strong>t =
+a<sup>r</sup></strong> is calculated and fixed. This value is concatenated to the message <strong>M</strong>
+and hashed: <strong>e = H(M, t)</strong>.  The client calculates <strong>y = (r - ue)</strong> and thereby
+forms the signature with <strong>e</strong> and <strong>y</strong>. It sends <strong>e</strong> and <strong>y</strong> to the server.</p>
+</div>
+<div class="paragraph">
+<p>The server calculates <strong>t' = a<sup>y</sup> * f<sup>e</sup></strong>. It checks whether <strong>e' = H(M, t')</strong>
+equals <strong>e</strong>. One can easily see that the client must indeed be the holder of the
+secret <strong>u</strong> (and thereby the only one who can commit to <strong>f</strong>), if we insert the
+values for <strong>y</strong> and <strong>f</strong>: <strong>t' = a<sup>(r-ue)</sup> * (a<sup>u</sup>)<sup>e</sup> = a <sup>(r-ue+ue)</sup> = a <sup>r</sup> =
+t</strong>.</p>
+</div>
+<div class="paragraph">
+<p>In conclusion, by having a specific client committing to a value <strong>f</strong> upon
+initialization, it can be identified by the Digital ID host without requiring a
+user name and password and therefore without many security problems that come
+along.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_permission_system">5.2. Permission System</h3>
+<div class="paragraph">
+<p>Assume that a client wants to fetch data from another Digital ID identity. The
+data owner must first give permission to the identity of the requesting client.
+Permission can be granted to</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>everybody, or</p>
+</li>
+<li>
+<p>a contact, which references a person using an identifier,</p>
+</li>
+<li>
+<p>a context, which is a hierarchy of other contexts that has contacts as leaf nodes, or</p>
+</li>
+<li>
+<p>an expressions, which is a set operation on everybody or one or more contexts and allows to further restrict
+access by specifying attributes that must or must not be associated with the individuals of the group.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_client_authentication_towards_other_digital_id_identities" data-toc-text="5.3. Towards other DID">5.3. Client Authentication towards other Digital ID Identities</h3>
+<div id="client-authentication-other" class="paragraph">
+<p>When a client requests information of a Digital ID identity (other than its
+own), it must first request a credential from its own Digital ID host, which it
+then can present to the Digital ID host of the requested identity.</p>
+</div>
+<div class="paragraph">
+<p>For this, the client requests that a hash <strong>s</strong> of a certain statement is signed,
+e.g. an attribute, a range of an attribute, a negation of an attribute, etc.
+It sends <strong>s</strong> along with <strong>y * h<sup>r</sup></strong>, <strong>y</strong> being the public key of the client (see
+Schnorr signature in <a href="#client-authentication-towards-own-Digital-ID-Identity">Section 5.1</a> <strong>h</strong> being part of the public key of the Digital ID host of the
+requesting identity, and <strong>r</strong> being a randomly chosen blinding value.</p>
+</div>
+<div class="paragraph">
+<p>The Digital ID host then signs the statement by calculating <strong>b =
+(f<sup>-s</sup>g<sup>x</sup>h<sup>r</sup>)<sup>-1/e</sup> mod n</strong> (n being the modulus of the RSA group of the
+host). <strong>b</strong> is returned to the client.</p>
+</div>
+<div class="paragraph">
+<p>The values <strong>f</strong>, <strong>g</strong>, <strong>h</strong> and <strong>n</strong> constitute the public key of the Digital ID
+host. Due to the fact that only the Digital ID host knows the group order, no
+one else can compute the <strong>e<sub>th</sub></strong> root to find <strong>b</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Instead of forwarding <strong>b</strong> directly to the Digital ID host that hosts the requested identity,
+the client adds an additional blinding value <strong>r'</strong>, which makes the credential re-usable so
+that it can not be tracked back to a single identity. Therefore, <strong>b' = b * h<sup>r'</sup></strong> is calculated
+and <strong>b'</strong> and <strong>s</strong> are forwarded to the Digital ID host of the requested identity.
+The receiving Digital ID host validates the credential <strong>b'</strong> by proving that
+<strong>f<sup>s</sup> = b'<sup>e</sup>g<sup>x</sup>h<sup>r-e*r'</sup></strong>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_protocol_specifics">6. Protocol Specifics</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Digital ID is a semantic alternative to the hyper-text transfer protocol
+(HTTP). In comparison to HTTP, the identity is part of the protocol, which
+makes accounts and account management on the server-side superfluous.</p>
+</div>
+<div class="paragraph">
+<p>Digital ID consists of two layers: an open <strong>identity layer</strong> for the Internet,
+and a <strong>lookup layer</strong> for personal information.</p>
+</div>
+<div class="paragraph">
+<p>The following diagram visualizes where we position the identity layer. We see
+Digital ID as the base for applications, who can now focus on their service
+instead of managing accounts and security.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="{{ site.baseurl }}/assets/graphics/explanations/identity_layer.svg" alt="Digital ID identity layer" width="500">
+</div>
+</div>
+<div class="paragraph">
+<p>The lookup layer allows for decentralized hosting of user data and platform
+independence.  If user A would like to use a different service for hosting
+files as user B, they are still able to exchange files by requesting the
+referenced service. Authentication and identification at the service can
+also be done via the identity layer, or though other authentication methods.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="{{ site.baseurl }}/assets/graphics/explanations/lookup_layer.svg" alt="Digital ID lookup layer" width="500">
+</div>
+</div>
+<div class="sect2">
+<h3 id="_connection_details">6.1. Connection Details</h3>
+<div class="paragraph">
+<p>The Digital ID protocol follows a decentralized client-server model and runs on
+top of TCP. A subdomain <strong>id.&lt;domain&gt;.&lt;tld&gt;</strong> must be registered and point to the
+IP address of the server that runs the Digital ID host. The socket port is
+currently specified as <strong>{{ site.data.protocol.port }}</strong>. All communication is encrypted with RSA-2048 and
+AES 192 with CBC and PKCS5 padding.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_extensible_data_format" data-toc-text="6.2. Ext. Data Format">6.2. eXtensible Data Format</h3>
+<div class="paragraph">
+<p>To describe the intention of a request, e.g., which actions or queries should
+be performed, the eXtensible Data Format (XDF) is used.  It is a binary format
+that describes what kind of information is sent from a client to a server and
+vice versa. Instead of being human readable, as XML or HTTP, XDF focuses on
+being efficient, small and easy for machines to understand.</p>
+</div>
+<div class="paragraph">
+<p>XDF knows two types: Syntactic and semantic types. As the names suggest,
+syntactic types define what data is transmitted, whereas semantic types define
+the meaning of the information.</p>
+</div>
+<div class="paragraph">
+<p>XDF is extensible with new syntactic or semantic types. If is, however, required
+that types are unique. Instead of namespaces, as typically used in XML, a type in
+XDF is specified with an identifier of the format <code>&lt;typename&gt;@&lt;host&gt;</code>.</p>
+</div>
+<div class="sect3">
+<h4 id="_syntactic_types">6.2.1. Syntactic Types</h4>
+<div class="paragraph">
+<p>The basic idea of syntactic types is to encode the hierarchy of types. Final types,
+such as integers, characters, booleans, etc., are the leaf nodes of the hierarchy and
+describe the type of a single value. Structural types such as tuples, maps and
+lists can group multiple values or key-value pairs of either the same or different
+(syntactic or semantic) types.</p>
+</div>
+<div class="paragraph">
+<p>Another type that falls under the category of syntactic types are the so called transformational
+types. In Digital ID, we defined three types of transformational types:
+encryption, signatures and compression. They define the process of validating or retrieving
+the content of a message. They can be seen as syntactic sugar that describes how a packet
+in Digital ID must look like.</p>
+</div>
+<div class="paragraph">
+<p>Final types, structural types and transformational types all fall under the category
+of syntactic types. They can be used to describe how information is encoded.
+The table below gives an overview of the syntactic types that are currently supported
+by XDF.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 1. Syntactic Types</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 25%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Category</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Identifier</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-middle" rowspan="15"><p class="tableblock">Final Types</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean@core.digitalid.net</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Either true or false.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer08</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>integer08@core.digitalid.net</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An integer number of 8 bit (byte).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer16</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>integer16@core.digitalid.net</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An integer number of 16 bit (short).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer32</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>integer32@core.digitalid.net</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An integer number of 32 bit (int).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer64</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>integer64@core.digitalid.net</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An integer number of 64 bit (long).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>integer@core.digitalid.net</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A big integer number, between -2<sup>2*(31-1)</sup> and +2<sup>2*(31-1)</sup>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Decimal32</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>decimal32@core.digitalid.net</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A floating point number of 32 bit (float).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Decimal64</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>decimal64@core.digitalid.net</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A floating point number of 64 bit (double).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>string1@core.digitalid.net</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A character.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String64</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>string64@core.digitalid.net</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A string of at most 64 characters.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String128</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>string128@core.digitalid.net</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A string of at most 128 characters.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>string@core.digitalid.net</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A string of arbitrary length.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Binary128</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>binary128@core.digitalid.net</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A byte array of 128 bytes.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Binary256</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>binary256@core.digitalid.net</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A byte array of 256 bytes.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Binary</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>binary@core.digitalid.net</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A byte array of arbitrary length.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle" rowspan="2"><p class="tableblock">Structural Types</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>list@core.digitalid.net</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of other types. Every item in the list must have the same type.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tuple</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>tuple@core.digitalid.net</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A collection of multiple syntactic types. The types may be different.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-middle" rowspan="3"><p class="tableblock">Transformational Types</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Compression</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>compression@core.digitalid.net</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The content is compressed with the ZIP file format as
+described in the <a href="https://www.ietf.org/rfc/rfc1951.txt">RFC1951</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Signature</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>client.signature@core.digitalid.net</code>, <code>host.signature@core.digitalid.net</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The content is signed by the client (request) or by the host (response).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Encryption</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>request.encryption@core.digitalid.net</code>, <code>response.encryption@core.digitalid.net</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The content is encrypted by the client (request) or by the host (response).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_semantic_types">6.2.2. Semantic Types</h4>
+<div class="paragraph">
+<p>While syntactic types focus on the <em>how</em>, semantic types deal with the <em>what</em>:
+What information is encoded in a package or in an XDF file.
+A semantic type describes the meaning of a type. It may be based on other semantic
+types and eventually resolves to a collection of syntactic types.</p>
+</div>
+<div class="paragraph">
+<p>Digital ID specifies its action using semantic types. It thereby achieves extensibility,
+because not every Digital ID host must necessarily understand every semantic type.</p>
+</div>
+<div class="paragraph">
+<p>Semantic types may restrict syntactic types. For example, <code>month@core.digitalid.net</code> is a semantic type
+based on an Integer08 and must be positive and smaller than 12. Likewise, <code>birthday@core.digitalid.net</code>
+is a semantic type that is based on a tuple of <code>day@core.digitalid.net</code>, <code>month@core.digitalid.net</code>,
+<code>year@core.digitalid.net</code> and restricts that the date must be in the past.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_core_methods">7. Core Methods</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Digital ID core protocol specifies core methods that are available on every
+Digital ID host. These are necessary to create and manage an identity.
+Additional methods can be specified by Digital ID extensions and may be very
+specific for the use case.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="{{ site.baseurl }}/assets/graphics/explanations/extensions.svg" alt="Digital ID extensions" width="500">
+</div>
+</div>
+<div class="sect2">
+<h3 id="_action_queries_and_replies" data-toc-text="7.1. Methods and Replies">7.1. Action, Queries and Replies</h3>
+<div class="paragraph">
+<p>In Digital ID, methods are either actions or queries. Actions change a state on
+the host or client, whereas queries return a state. The actions and queries available
+on the Digital ID core protocol are listed below.</p>
+</div>
+<div class="paragraph">
+<p>Replies are messages that inform the request issuer about the state of the action
+or query. A successfully executed action SHOULD have an empty reply. Clients
+are informed about errors via error replies.</p>
+</div>
+<div class="sect3">
+<h4 id="_error_replies">7.1.1. Error Replies</h4>
+<div class="paragraph">
+<p>In case of an error, a code is returned to the client. The core is based on
+the <code>integer08@core.digitalid.net</code> type. The following request error codes are
+available to indicate which error happened:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>0: INTERNAL</strong>: Indicates a condition that should never occur in a correct program.
+The error is an internal server error.</p>
+</li>
+<li>
+<p><strong>1: EXTERNAL</strong>: Indicates an abnormal condition that is caused by an external component.</p>
+</li>
+<li>
+<p><strong>2: REQUEST</strong>: Indicates that the request is invalid.</p>
+</li>
+<li>
+<p><strong>3: PACKET</strong>: Indicates that the packet is corrupt.</p>
+</li>
+<li>
+<p><strong>4: REPLAY</strong>: Indicates that the packet is replayed.</p>
+</li>
+<li>
+<p><strong>5: ENCRYPTION</strong>: Indicates that the encryption is invalid.</p>
+</li>
+<li>
+<p><strong>6: KEYS</strong>: Indicates that the keys are invalid.</p>
+</li>
+<li>
+<p><strong>7: AUDIT</strong>: Indicates that the audit file was corrupt.</p>
+</li>
+<li>
+<p><strong>8: SIGNATURE</strong>: Indicates that the signature was invalid.</p>
+</li>
+<li>
+<p><strong>9: KEYROTATION</strong>: Indicates that a key rotation is required.</p>
+</li>
+<li>
+<p><strong>10: COMPRESSION</strong>: Indicates that the compression is invalid.</p>
+</li>
+<li>
+<p><strong>11: CONTENT</strong>: Indicates that the content has the wrong format.</p>
+</li>
+<li>
+<p><strong>12: METHOD</strong>: Indicates that the method does not exist.</p>
+</li>
+<li>
+<p><strong>13: RECIPIENT</strong>: Indicates that the recipient is unknown.</p>
+</li>
+<li>
+<p><strong>14: IDENTITY</strong>: Indicates that the identifier is unknown.</p>
+</li>
+<li>
+<p><strong>15: RELOCATION</strong>: Indicates that the identity relocated to another host.</p>
+</li>
+<li>
+<p><strong>16: SERVICE</strong>: Indicates that the referenced service does not exist or does
+not know the identity anymore.</p>
+</li>
+<li>
+<p><strong>17: AUTHORIZATION</strong>: Indicates an insufficient authorization.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The error reply is encoded as <code>error@core.digitalid.net</code> and is a tuple of
+an error code (based on the syntactic type <code>integer08@core.digitalid.net</code>)
+and a message (based on the syntactic type <code>string64@core.digitalid.net</code>).</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_permissions_and_restrictions" data-toc-text="7.2. Client Authorization">7.2. Permissions and Restrictions</h3>
+<div class="paragraph">
+<p>Before an action or query is executed on a host, the host checks whether
+the identity has the required permissions to execute the method.
+Therefore, every method must define which permissions it needs.</p>
+</div>
+<div class="paragraph">
+<p>Further, internal actions can also define required restrictions. These
+define whether the client must have specific roles.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_identity_creation_2">7.3. Identity Creation</h3>
+<div class="paragraph">
+<p>When a new Digital ID is created, the host checks whether the chosen identifier
+already exists. If this is not the case, it creates the new Digital ID and
+marks the client as fully authorized. Only the client that is used for identity
+creation is authorized automatically. Other clients need to be marked as
+authorized through an existing client. See <a href="#client_accreditation">Client Accreditation</a>
+for further details.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="{{ site.baseurl }}/assets/graphics/communication/identity_creation.svg" alt="identity creation" width="500">
+</div>
+</div>
+<div class="paragraph">
+<p>Action name: <code>action.open.account@core.digitalid.net</code></p>
+</div>
+<div class="paragraph">
+<p>Content:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>subject@core.digitalid.net</code>: The identifier for which an account should be
+opened. Based on <code>string64@core.digitalid.net</code>.</p>
+</li>
+<li>
+<p><code>category@core.digitalid.net</code>: The category for which an account
+should be opened. Based on <code>integer08@core.digitalid.net</code>.
+Values are either 3 (natural person) or 4 (artificial
+person, which is a legal, but not natural person such as an organization).</p>
+</li>
+<li>
+<p><code>client.agent.key@core.digitalid.net</code>: Together with the subject, the client agent key uniquely
+identifies a client.
+The client chooses a client agent key and informs the host about its choice.</p>
+</li>
+<li>
+<p><code>client.name@core.digitalid.net</code>: The human-readable name of the client.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_client_accreditation">7.4. Client Accreditation</h3>
+<div id="client_accreditation" class="paragraph">
+<p>Only the first client, with which the Digital ID has been created, is
+automatically authorized. Other clients need to be explicitly marked as
+authorized by the user through an already authorized client. The new client
+polls the host to check whether it has already been authorized.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="{{ site.baseurl }}/assets/graphics/communication/client_accreditation.svg" alt="client accreditation" width="500">
+</div>
+</div>
+<div class="paragraph">
+<p>Action name: <code>action.accredit.client.agent@core.digitalid.net</code></p>
+</div>
+<div class="paragraph">
+<p>Content:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>client.agent.key@core.digitalid.net</code>: The client agent that should be accredited.</p>
+</li>
+<li>
+<p><code>client.name@core.digitalid.net</code>: The name of the client.</p>
+</li>
+<li>
+<p><code>client.commitment@digitalid.net</code>: The commitment of the client, which is semantically equivalent to its public key.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>An already authorized client can activate a client by calling the following action:</p>
+</div>
+<div class="paragraph">
+<p>Action name: <code>action.client.agent.active@core.digitalid.net</code></p>
+</div>
+<div class="paragraph">
+<p>Content:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>boolean@core.digitalid.net</code>: The flag that marks the client as active. To activate, true must be transferred.
+Likewise, to disable a client, false must be transferred.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_attribute_creation_and_modification" data-toc-text="7.5. Attribute Creation">7.5. Attribute Creation and Modification</h3>
+<div class="paragraph">
+<p>An identity can create and manage attributes by changing their value or their visibility.</p>
+</div>
+<div class="paragraph">
+<p>To change the value of an attribute, the following action can be called:</p>
+</div>
+<div class="paragraph">
+<p>Action name: <code>action.attribute.value@core.digitalid.net</code></p>
+</div>
+<div class="paragraph">
+<p>Content:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>signature@core.digitalid.net</code>: Contains the type-agnostic, signed attribute.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The visibility of an attribute is defined by its owner, not by the action itself.
+This means that the permission to access an attribute is public, but is restricted
+by the visibility property.
+To change the visibility of an attribute, the following action can be called:</p>
+</div>
+<div class="paragraph">
+<p>Action name: <code>action.attribute.visibility@core.digitalid.net</code></p>
+</div>
+<div class="paragraph">
+<p>Content:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>passiveexpression@core.digitalid.net</code>: The passive expression that defines the visibility.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_credential_query">7.6. Credential Query</h3>
+<div class="paragraph">
+<p>When requesting data from another identity, the request must be signed with the
+user’s identity. Therefore, the client must first request a credential from the
+user’s host. The credential is valid for one hour and can be used to retrieve
+data from any hosts that accepts the credential.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="{{ site.baseurl }}/assets/graphics/communication/attributes_request.svg" alt="attributes request" width="500">
+</div>
+</div>
+<div class="paragraph">
+<p>Query name: <code>query.credential@core.digitalid.net</code></p>
+</div>
+<div class="paragraph">
+<p>Content:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>credential.claim@core.digitalid.net</code>: A claim which states that the
+identity has certain attributes. The credential is issued such that the
+receiver of the credential can prove that the claim is correct.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Returns:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>credential@core.digitalid.net</code>: Returns the credential, which is valid
+for one hour.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_public_key_retrieval_and_trust_validation" data-toc-text="7.7. Public Key Retrieval">7.7. Public Key Retrieval and Trust Validation</h3>
+<div class="paragraph">
+<p>When a client communicates with a host for the first time, the host’s public
+key has to be retrieved, so that the following requests can be encrypted. The
+attribute request to retrieve the public key of a host is still unencrypted and
+unsigned. It is the only available request in Digital ID which may be unencrypted.</p>
+</div>
+<div class="paragraph">
+<p>Every client is shipped with the certificate of the root certificate
+authority (RCA). If a public key is retrieved from a host, its validity and
+trust is checked by validating the certificate chain.  Every successfully
+validated public key is cached at the client. The attribute request for a
+server’s public key is recursive, until an already cached and therefore trusted
+public key is found. The last intermediate CA certificate must be signed with
+the shipped certificate of the root CA, otherwise the public key is not
+considered valid.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="{{ site.baseurl }}/assets/graphics/communication/public_key_retrieval.svg" alt="public key retrieval" width="500">
+</div>
+</div>
+<div class="paragraph">
+<p>Query name: <code>query.host.publickey@core.digitalid.net</code></p>
+</div>
+<div class="paragraph">
+<p>Returns:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>host.publickey@core.digitalid.net</code>: The public key of the queried host.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_attribute_request">7.8. Attribute Request</h3>
+<div class="paragraph">
+<p>If the attribute&#8217;s visibility allows an identity to access the attribute of
+another identity, When requesting attributes from a contact, the visibility
+expression is evaluated to identify whether the requesting identity is allowed
+to read the attribute&#8217;s value.</p>
+</div>
+<div class="paragraph">
+<p>Query name: <code>query.attribute.value@core.digitalid.net</code></p>
+</div>
+<div class="paragraph">
+<p>Content:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>signature@core.digital.id.net</code>: The requested, type-agnostic attribute.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Returns:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>signature@core.digitalid.net</code>: Returns the attribute and its value, which is
+type-agnostic.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_identity_attributes">8. Identity Attributes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Each host can define its own semantic types and, thereby, extend the set of
+attributes available in the Digital ID protocol.</p>
+</div>
+<div class="paragraph">
+<p>The attributes defined in the Digital ID core host are listed below.</p>
+</div>
+<div class="sect2">
+<h3 id="_core_attribute">8.1. Core Attribute</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>name@core.digitalid.net</strong>: A name. It is based on a <code>string64@core.digitalid.net</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_address_attributes">8.2. Address Attributes</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>firstname@core.digitalid.net</strong>: The first name of the person. It is based on a <code>string64@core.digitalid.net</code>.</p>
+</li>
+<li>
+<p><strong>surname@core.digitalid.net</strong>: The last name of the person. It is based on a <code>string64@core.digitalid.net</code>.</p>
+</li>
+<li>
+<p><strong>email@core.digitalid.net</strong>: Specifies an email address. It is based on a <code>string64@core.digitalid.net</code> and matches a certain regular expression.</p>
+</li>
+<li>
+<p><strong>phone@core.digitalid.net</strong>: Specifies a phone number. It is based on a <code>string64@core.digitalid.net</code>.</p>
+</li>
+<li>
+<p><strong>streetname@core.digitalid.net</strong>: Specifies the name of a street. It is based <code>string64@core.digitalid.net</code>.</p>
+</li>
+<li>
+<p><strong>streetnumber@core.digitalid.net</strong>: Specifies the street number. It is based <code>integer08@core.digitalid.net</code>.</p>
+</li>
+<li>
+<p><strong>street@core.digitalid.net</strong>: Specifies a street. It is based on a tuple of <code>streetname@core.digitalid.net</code> and <code>streetnumber@core.digitalid.net</code>.</p>
+</li>
+<li>
+<p><strong>zipcode@core.digitalid.net</strong>: Specifies a zipcode. It is based on <code>string64@core.digitalid.net</code>.</p>
+</li>
+<li>
+<p><strong>cityname@core.digitalid.net</strong>: Specifies the name of a city. It is based on <code>string64@core.digitalid.net</code>.</p>
+</li>
+<li>
+<p><strong>city@core.digitalid.net</strong>: Specifies a city. It is based on a tuple of <code>zipcode@core.digitalid.net</code> and <code>cityname@core.digitalid.net</code>.</p>
+</li>
+<li>
+<p><strong>address@core.digitalid.net</strong>: Specifies an address. It is based on a tuple of the semantic type <code>name@core.digitalid.net</code>, <code>street@core.digitalid.net</code>, <code>city@core.digitalid.net</code> and <code>country@core.digitalid.net</code>.</p>
+</li>
+<li>
+<p><strong>country@core.digitalid.net</strong>: Specifies the name of a country. It is based on <code>string64@core.digitalid.net</code>. The list of currently valid country names currently contains 196 valid entries.</p>
+</li>
+<li>
+<p><strong>website@core.digitalid.net</strong>: The website of the person. It is based on the syntactic type <code>string64@core.digitalid.net</code>.</p>
+</li>
+<li>
+<p><strong>day@core.digitalid.net</strong>: Specified a day. It is based on the syntactic type <code>integer08@core.digitalid.net</code>. The value must be positive and lower or equal to 31.</p>
+</li>
+<li>
+<p><strong>month@core.digitalid.net</strong>: Specified a month. It is based on the syntactic type <code>integer08@core.digitalid.net</code>. The value must be positive and lower or equal to 12.</p>
+</li>
+<li>
+<p><strong>year@core.digitalid.net</strong>: Specified a year. It is based on the syntactic type <code>integer08@core.digitalid.net</code>. The value must be positive.</p>
+</li>
+<li>
+<p><strong>birthday@core.digitalid.net</strong>: The birthday of the person. It is based on the tuple of <code>day@core.digitalid.net</code>, <code>month@core.digitalid.net</code> and <code>year@core.digitalid.net</code> and must be in the past.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_web_extensions">9. Web Extensions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To make the Digital ID protocol available for HTTP services, the transaction
+gateway is introduced. It is a component which provides a REST interface that
+allows to use Digital ID services in a limited manner on the web. This section
+focuses on the REST API of the transaction gateway. The format of the
+available requests is introduced below.</p>
+</div>
+<div class="sect2">
+<h3 id="_general_architecture">9.1. General Architecture</h3>
+<div class="paragraph">
+<p>The overall architecture can be seen below. The green blocks represent
+components build upon the Digital ID protocol, the yellow blocks represent
+components in the HTTP context. On the left side we see the service provider,
+on the right side the user.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="{{ site.baseurl }}/assets/graphics/communication/web_extension.svg" alt="web extension" width="800">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+When using the web extension, the service provider must be a web application,
+that is capable of providing the transaction request via a HTTP REST API as Json.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Digital ID allows users to choose their desired Digital ID server. Users use
+one or more Digital ID clients (in this example, a mobile app) to manage their
+data and grant permission to access attributes.  Service providers publish
+their login, registration, signing or other identity-centered requests via an
+endpoint as so called transaction requests. They have a trusted relationship
+with a transaction gateway to receive transaction responses. This means that,
+for the service providers, the authentication of the user towards his/her
+identity server is out of scope.  Once a user confirms a transaction (i.e. by
+giving consent to federate attributes or by signing a document), the Digital ID
+client forwards a transaction response to the transaction gateway of the
+service provider.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_transaction_request">9.2. Transaction Request</h3>
+<div class="paragraph">
+<p>Transaction requests are used to initiate transactions from a service provider
+directed towards a specific person. These transactions are centered around a
+user and include identity and attribute federation, digital transaction such as
+online shopping checkouts, signing of digital documents and more.</p>
+</div>
+<div class="sect3">
+<h4 id="_request_envelope">9.2.1. Request Envelope</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_example">9.2.2. Example</h4>
+<div class="literalblock">
+<div class="content">
+<pre>{
+  "version": "v1",
+  "sessionId" : "1234",
+  "title": "Registration at https://example.com",
+  "description": "Please provide the following attributes in order to register at https://example.com:",
+  "sender": {
+    "senderName": "Example",
+    "senderIdentifier": "ex1",
+    "senderIconUrl": "https://example.com/icon"
+  },
+  "confirmationLevel": "STRONG",
+  "confirmationRequestMessage": "Please confirm the transaction",
+  "buttonName": "register",
+  "recipient": null,
+  "serviceEndpoint": "https://example.com/rest/transaction",
+  "primaryColor": "#2C3E50",
+  "secondaryColor": "#0AD2F4",
+  "messages": [
+    {
+      "responseRequired": true,
+      "title": "Requested Attributes",
+      "description": "The following attributes are required for the registration:",
+      "id": "attrreq1",
+      "collapsed": false,
+      "visible": true,
+      "requestedAttributes": [
+        {
+         "optional": false,
+        "attributeType": "FIRST_NAME"
+        },
+        {
+         "optional": false,
+        "attributeType": "LAST_NAME"
+        },
+        {
+         "optional": false,
+        "attributeType": "BIRTHDATE"
+        }
+      ]
+      "requestContext": "REGISTRATION"
+    }
+  ]
+}</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_properties">9.2.3. Properties</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><code>version</code> - required<br>
+The version indicates which version of transaction request
+is used. Currently valid is <em>"v1"</em>.</p>
+</li>
+<li>
+<p><code>sessionId</code> - required<br>
+The session id with which the transaction is associated
+with. The transaction response will contain the same session ID so that the
+service can map it to the request. The session ID can be an arbitrary string,
+chosen by the service and must not exceed 64 characters.</p>
+</li>
+<li>
+<p><code>title</code> - required<br>
+The title which appears in the transaction message. It
+should inform the user about the content of the transaction.</p>
+</li>
+<li>
+<p><code>description</code> - required<br>
+The description, which appears in the transaction
+message. It should inform the user in detail about the content of the
+transaction.</p>
+</li>
+<li>
+<p><code>sender</code> - required<br>
+An object which consists of the senderName,
+senderIdentifier and senderIconUrl.</p>
+</li>
+<li>
+<p><code>senderName</code> - required<br>
+The name of the sender, which is the service provider.
+The service provider must register itself with the same name. The transaction
+gateway must verify that the sender is authorized.</p>
+</li>
+<li>
+<p><code>senderIdentifier</code> - required<br>
+The unique identifier of the sender, which is the
+service provider. The service provider must register itself with the same
+identifier. The transaction gateway must verify that the sender is authorized.</p>
+</li>
+<li>
+<p><code>senderIconUrl</code> - optional<br>
+A URL to a icon in png or jpeg format that is shown
+in the transaction message. Max. size is 100x100 pixels.</p>
+</li>
+<li>
+<p><code>confirmationLevel</code> - optional, default: <code>NONE</code><br>
+Depending on the confirmation level, a different type of transaction is
+required. Valid values: <code>NONE</code>: no confirmation is required.  <code>WEAK</code>:
+confirmation with a PIN is required.  <code>STRONG</code>: confirmation with a biometric
+factor (e.g. fingerprint) is required.</p>
+</li>
+<li>
+<p><code>confirmationRequestMessage</code> - optional, default: <em>"Please confirm the
+transaction"</em><br>
+The message shown on the confirmation dialog.</p>
+</li>
+<li>
+<p><code>buttonName</code> - optional, default: <em>"continue"</em><br>
+The name of the button which is
+pressed to continue the transaction.</p>
+</li>
+<li>
+<p><code>recipient</code> - optional<br>
+The recipient, which is the Digital ID identifier of the
+person that receives the transaction request.</p>
+</li>
+<li>
+<p><code>serviceEndpoint</code> - optional<br>
+If specified, the transaction gateway responds
+directly with the transaction respond. If no value is specified, the service
+provider must poll at the transaction gateway to receive the transaction
+response.</p>
+</li>
+<li>
+<p><code>primaryColor</code> - optional<br>
+The primary color of the transaction request, shown
+in the app. Can be used to brand the transaction request for the service
+provider.</p>
+</li>
+<li>
+<p><code>secondaryColor</code> - optional<br>
+The secondary color of the transaction request,
+shown in the app.  messages. Can be used to brand the transaction request for
+the service provider.</p>
+</li>
+<li>
+<p><code>messages</code> - required<br>
+A list of messages which are the content of the
+transaction request. The list may be empty. If the <code>confirmationLevel</code> is set
+to <code>WEAK</code> or <code>STRONG</code>, the request is a login request. If the messages list is
+empty and <code>confirmationLevel</code> is <code>NONE</code>, the transaction request is invalid.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_messages">9.3. Messages</h3>
+<div class="paragraph">
+<p>There are 3 types of messages that can be send via transaction request:</p>
+</div>
+<div class="sect3">
+<h4 id="_message_types">9.3.1. Message Types</h4>
+<div class="sect4">
+<h5 id="_request">Request</h5>
+<div class="paragraph">
+<p>A request is a message for which a response is required. This is the most
+common transaction request message. Examples for requests are the attribute
+request, signing request, shopping cart request and select option request.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_notification">Notification</h5>
+<div class="paragraph">
+<p>A message that does not expect a response is called a notification.
+Notifications are used to inform the user about anything that might be relative
+to him or her. It is possible that notifications also update the state of his
+or her data. In comparison to an update, a notification is visible.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_update">Update</h5>
+<div class="paragraph">
+<p>Updates are messages that are not visible to the user, but change the state of
+his or her data. An example is changing the validation status of an attribute.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_message_body">9.3.2. Message Body</h4>
+<div class="paragraph">
+<p>The general message body has the following properties:</p>
+</div>
+<div class="sect4">
+<h5 id="_general_properties">General Properties</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><code>id</code> - required<br>
+The id of the message. The id is a string that is used to reference the
+message.</p>
+</li>
+<li>
+<p><code>title</code> - required<br>
+The title of the message, which is shown as the title of the section in the
+request.</p>
+</li>
+<li>
+<p><code>description</code> - optional<br>
+The description of the message, which describes the purpose of the request in
+detail.</p>
+</li>
+<li>
+<p><code>responseRequired</code> - required<br>
+A boolean flag that indicates whether a response is required, e.g. as a reply
+to an attributes request.</p>
+</li>
+<li>
+<p><code>collapsed</code> - optional, defaults to false<br>
+The flag indicates whether the whole message should be shown or if only a
+summary should be displayed. Used for example in the shopping cart request to
+give an overview of the products in the cart.</p>
+</li>
+<li>
+<p><code>visible</code> - required<br>
+The flag indicates whether the message should be visible at all, or if it is an
+invisible update.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_requests">9.3.3. Requests</h4>
+<div class="sect4">
+<h5 id="_properties_2">Properties</h5>
+<div class="paragraph">
+<p>The following property values are specific for messages of type <code>request</code>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>responseRequired</code>: True for all requests.</p>
+</li>
+<li>
+<p><code>visible</code>: True for all requests.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_attributesrequest">AttributesRequest</h5>
+<div class="paragraph">
+<p>This request type is used to request user attributes.</p>
+</div>
+<div class="sect5">
+<h6 id="_example_2">Example</h6>
+<div class="literalblock">
+<div class="content">
+<pre>{
+    "responseRequired": true,
+    "title": "Requested Attributes",
+    "description": "The following attributes are required for the registration:",
+    "id": "attrreq1",
+    "collapsed": false,
+    "visible": true,
+    "requestedAttributes": [
+        {
+            "optional": false,
+            "attributeType": "FIRST_NAME"
+        },
+        {
+            "optional": false,
+            "attributeType": "LAST_NAME"
+        },
+        {
+            "optional": false,
+            "attributeType": "BIRTHDATE"
+        }
+    ],
+    "requestContext": "REGISTRATION"
+}</pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_properties_3">Properties</h6>
+<div class="ulist">
+<ul>
+<li>
+<p><code>requestedAttributes</code> - required<br>
+A list of requested attributes.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>optional</code> - required<br>
+Indicates whether the attribute is optional or mandatory. If optional, the
+user can choose not to return it and the request should still succeed.</p>
+</li>
+<li>
+<p><code>attributeType</code> - required<br>
+The type of the attribute that is requested. Must be one of:</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FIRST_NAME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The first name of the user.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LAST_NAME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The last name of the user.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NAME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The first and last name of the user or another identifying name of the identity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GENDER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">THe gender f the user. Valid values are <em>"female"</em> and <em>"male"</em>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BIRTHDATE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The birthdate of the user.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NATIONALITY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The nationality of the identity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PICTURE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The picture of the identity in the form of a URL that links to a png or jpeg image.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">STREET</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The street of the identity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ZIPCODE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The zipcode of the identity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CITYNAME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the city.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CITY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The zipcode and the name of the city.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">STATE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The state of the identity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">COUNTRY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The country of the identity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ADDRESS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The address of the identity, which is a combination of STREET, CITY and STATE.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PHONE_NUMBER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The phone number of the identity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EMAIL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The email address of the identity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PASSPORT_AUTHORITY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The authority that issued the passport.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PASSPORT_NUMBER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The passport number.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PASSPORT_DATE_OF_ISSUE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The date on which the passport was issued.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PASSPORT_DATE_OF_EXPIRY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The date on which the passport will expire.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p><code>requestContext</code> - optional<br>
+The context under which the request was initiated. Depending on the context, the presentation on the app might differ.
+Currently valid values are: <code>REGISTRATION</code>, <code>LOGIN</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_signingrequest">SigningRequest</h5>
+<div class="paragraph">
+<p>This request type is used to sign a document.</p>
+</div>
+<div class="sect5">
+<h6 id="_example_3">Example</h6>
+<div class="literalblock">
+<div class="content">
+<pre>{
+    "responseRequired": true,
+    "title": "Signing Request",
+    "description": "Please sign the following document:",
+    "id": "signreq1",
+    "visible": true,
+    "documentURL": "https://example.com/files/document.pdf"
+}</pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_properties_4">Properties</h6>
+<div class="ulist">
+<ul>
+<li>
+<p><code>documentURL</code> - required<br>
+The URL of the document that should be signed.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_notification_2">9.3.4. Notification</h4>
+<div class="sect4">
+<h5 id="_properties_5">Properties</h5>
+<div class="paragraph">
+<p>The following property values are specific for messages of type <code>notification</code>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>responseRequired</code>: False for all requests.</p>
+</li>
+<li>
+<p><code>visible</code>: True for all requests.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Currently there are no specified notification messages.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_update_2">9.3.5. Update</h4>
+<div class="sect4">
+<h5 id="_properties_6">Properties</h5>
+<div class="paragraph">
+<p>The following property values are specific for messages of type <code>notification</code>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>responseRequired</code>: False for all requests.</p>
+</li>
+<li>
+<p><code>visible</code>: False for all requests.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_validation_update">Validation Update</h5>
+<div class="paragraph">
+<p>Informs the client about currently valid attribute values.</p>
+</div>
+<div class="sect5">
+<h6 id="_example_4">Example</h6>
+<div class="literalblock">
+<div class="content">
+<pre>{
+    "id": "signreq1",
+    "title": "Validation Update",
+    "visible": false,
+    "responseRequired": false,
+    "validatedAttributes": [
+        "FIRST_NAME": "Stephanie",
+        "LAST_NAME": "Stroka",
+        "BIRTHDATE": "06.09.1987"
+    ]
+}</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_properties_7">Properties</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><code>validatedAttributes</code> - required<br>
+The attributes and attribute values that have been successfully validated.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_transaction_response">9.4. Transaction Response</h3>
+<div class="paragraph">
+<p>Transaction responses are replies to transaction requests. The following
+section documents the properties of transaction responses.</p>
+</div>
+<div class="sect3">
+<h4 id="_response_envelope">9.4.1. Response Envelope</h4>
+<div class="sect4">
+<h5 id="_example_5">Example</h5>
+<div class="literalblock">
+<div class="content">
+<pre>{
+    "version": "v1",
+    "sessionId" : "1234",
+    "digitalID": "stephanie.stroka@digitalid.net",
+    "transactionConfirmed": true,
+    "userCancelled": false,
+    "responses": [
+        {
+            "attributes": [
+                "FIRST_NAME": "Stephanie",
+                "LAST_NAME": "Stroka",
+                "BIRTHDATE": "06.09.1987"
+            ]
+        }
+      ]
+}</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_properties_8">Properties</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><code>version</code> - required<br>
+The version indicates which version of transaction response is used. Currently
+valid is "v1".</p>
+</li>
+<li>
+<p><code>sessionId</code> - required<br>
+The session id with which the transaction is associated with. The transaction
+response will contain the same session ID as the transaction request so that
+the service can map it to the request. The session ID can be an arbitrary
+string, chosen by the service and must not exceed 64 characters.</p>
+</li>
+<li>
+<p><code>digitalID</code> - required<br>
+The digital ID identifier with which the transaction was executed.
+transactionConfirmed - required
+The flag indicates if the transaction was successfully confirmed.</p>
+</li>
+<li>
+<p><code>userCancelled</code> - required<br>
+The flag indicates if the user cancelled the request.</p>
+</li>
+<li>
+<p><code>responses</code> - required<br>
+A list of responses that map to the request messages in the transaction
+request. The list can be empty if there were no request messages.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_responses">9.4.2. Responses</h4>
+<div class="paragraph">
+<p>Responses are replies to messages of type request. The following responses can
+be expected when sending requests.</p>
+</div>
+<div class="sect4">
+<h5 id="_attributesresponse">AttributesResponse</h5>
+<div class="paragraph">
+<p>Response to the AttributeRequest.</p>
+</div>
+<div class="sect5">
+<h6 id="_example_6">Example</h6>
+<div class="literalblock">
+<div class="content">
+<pre>{
+  "attributes": [
+    "FIRST_NAME": "Stephanie",
+    "LAST_NAME": "Stroka",
+    "BIRTHDATE": "06.09.1987"
+  ]
+}</pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_properties_9">Properties</h6>
+<div class="ulist">
+<ul>
+<li>
+<p><code>attributes</code> - required<br>
+A list of attribute types and their values. Must contain all non-optional requested attributes.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_signingresponse">SigningResponse</h5>
+<div class="paragraph">
+<p>Response to the SigningRequest.</p>
+</div>
+<div class="sect5">
+<h6 id="_example_7">Example</h6>
+<div class="literalblock">
+<div class="content">
+<pre>{
+  "isSigned": true,
+  "signedDocumentURL": "https://idp.org/files/signed_document.pdf"
+}</pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_properties_10">Properties</h6>
+<div class="ulist">
+<ul>
+<li>
+<p><code>isSigned</code> - required<br>
+Indicates whether the document was signed.</p>
+</li>
+<li>
+<p><code>signedDocumentURL</code> - required<br>
+The location of the signed document.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

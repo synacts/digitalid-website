@@ -1,0 +1,41 @@
+# For technical reasons, this file is *NOT* reloaded automatically when you run the command
+# 'bundle exec jekyll serve'. If you change this file, please restart the server process.
+
+title: Digital ID
+email: info@digitalid.net
+description: Digital ID is a protocol that constitutes an identity layer for the Internet and a semantic alternative to the World Wide Web. It allows you to prove your identity towards others and to look up attributes of others in a decentralized manner. Being freely extensible with services, Digital ID aims to supersede proprietary platforms by establishing a framework of open standards.
+baseurl: ""
+url: http://www.digitalid.net
+permalink: pretty
+paginate: 5
+paginate_path: /news/:num/
+date_format: "%e %B %Y" # http://strftime.net
+google_analytics: UA-29309650-1
+
+colors:
+  - primary: "#2C3E50"
+  - secondary: "#0AD2F5"
+
+plugins:
+  - jekyll-feed
+  - jekyll-paginate
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: main
+  - scope:
+      path: ""
+      type: pages
+    values:
+      layout: page
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+
+# Table of Contents:
+# <h2 data-toc-text="Short Text">Longer Text</h2>
+# <h2 data-toc-skip>Heading is Skipped in TOC</h2>

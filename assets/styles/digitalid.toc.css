@@ -1,0 +1,157 @@
+body {
+    margin-bottom: 24px;
+}
+
+svg {
+    fill: currentColor;
+}
+
+span.glyphicon {
+    top: 2px;
+}
+
+ul.navbar-right span.glyphicon {
+    margin-right: 0px;
+}
+
+ul.navbar-right span.glyphicon + span {
+    margin-left: 8px;
+}
+
+p.lead {
+    margin-top: -7px;
+}
+
+iframe {
+    margin-top: 11px !important;
+}
+
+h2:before, h3:before {
+    display: block;
+    content: " ";
+    margin-top: -80px;
+    height: 80px;
+    visibility: hidden;
+}
+
+h3.post-title {
+    font-size: 24px;
+    margin-top: 24px;
+    margin-bottom: 10.5px;
+}
+
+p.post-meta {
+    color: #767676;
+}
+
+p.post-excerpt {}
+
+p.rss-subscribe {}
+
+div.alert a {
+    color: white;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+img#appstore-icon {
+    margin: -12px;
+    margin-top: -8px;
+    width: 180px;
+}
+
+div#newsletter {
+    position: fixed;
+}
+
+@media (min-width: 992px) {
+    div#newsletter {
+        width: 212.5px;
+    }
+}
+
+@media (min-width: 1200px) {
+    div#newsletter {
+        width: 262.5px;
+    }
+}
+
+div#newsletter label {
+    margin-bottom: 0px;
+}
+
+div#newsletter .form-group > label {
+    font-weight: bold;
+}
+
+div#newsletter .form-control {
+    font-size: 15px;
+    height: 28px;
+    padding: 0px;
+}
+
+div#newsletter div.form-check {
+    margin-top: 2px;
+}
+
+div#newsletter input.form-check-input {
+    margin-top: 5px;
+}
+
+nav#toc {
+    margin-top: 20px;
+}
+
+@media (max-width: 991px) {
+    nav.affix#toc, div#newsletter {
+        position: static;
+    }
+    
+    nav.affix#toc ul.nav ul.nav {
+        display: block;
+    }
+}
+
+nav#toc a {
+    color: #767676;
+    display: block;
+    padding: 4px 12px;
+}
+
+nav#toc a:focus, nav#toc a:hover {
+    color: #2C3E50;
+    padding-left: 11px;
+    text-decoration: none;
+    background-color: transparent;
+    border-left: 1px solid #2C3E50;
+}
+
+nav#toc li.active > a, nav#toc li.active > a:focus, nav#toc li.active > a:hover {
+    color: #2C3E50;
+    font-weight: bold;
+    padding-left: 10px;
+    background-color: transparent;
+    border-left: 2px solid #2C3E50;
+}
+
+nav#toc ul.nav ul.nav {
+    padding-bottom: 8px;
+    display: none;
+}
+
+nav#toc ul.nav li.active ul.nav {
+    display: block;
+}
+
+nav#toc ul.nav ul.nav a {
+    font-size: 14px;
+    padding: 2px 22px;
+}
+
+nav#toc ul.nav ul.nav a:focus, nav#toc ul.nav ul.nav a:hover {
+    padding-left: 21px;
+}
+
+nav#toc ul.nav ul.nav li.active > a, nav#toc ul.nav ul.nav li.active > a:focus, nav#toc ul.nav ul.nav li.active > a:hover {
+    padding-left: 20px;
+}

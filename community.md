@@ -22,7 +22,7 @@ You would do us a great favor if you could [report](mailto:support@digitalid.net
 
 ## Contact
 
-<iframe style="float: right;" width="225" height="570" src="http://meetu.ps/3fCpbJ" frameborder="0"></iframe>
+<iframe style="float: right;" width="225" height="570" src="https://meetu.ps/3fCpbJ" frameborder="0"></iframe>
 
 You can send us an [email](mailto:info@digitalid.net) or visit us at the [F10](http://www.f10.ch) in Zurich, Switzerland.
 

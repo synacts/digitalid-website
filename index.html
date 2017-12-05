@@ -21,7 +21,7 @@ The ultimate goal of Digital ID is to replace closed platforms with open standar
 {% for post in site.posts limit:2 %}
 <h3 class="post-title"><a href="{{ post.url | relative_url }}">{{ post.title | escape }}</a></h3>
 <p class="post-meta">by {{ post.author.name }} on {{ post.date | date: site.date_format }}</p>
-<p class="post-excerpt">{{ post.excerpt | strip_html | strip_newlines }}</p>
+<p class="post-excerpt">{{ post.excerpt | strip_html }}</p>
 {% endfor %}
 
 <p style="margin-top: 24px;"><a href="{% link news/index.html %}">Read older news</a></p>

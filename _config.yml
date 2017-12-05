@@ -11,6 +11,8 @@ paginate_path: /news/:num/
 date_format: "%e %B %Y" # http://strftime.net
 google_analytics: UA-29309650-1
 
+baseurl: "/digitalid-website"
+
 plugins:
   - jekyll-feed
   - jekyll-paginate

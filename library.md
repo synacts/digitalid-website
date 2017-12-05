@@ -400,7 +400,7 @@ The downside is that it makes class hierarchies more complex.
 {% comment %}
 ### Object Conversion
 
-Both for SQL and [XDF]({% link protocol.html %}#_extensible_data_format)
+Both for SQL and [XDF]({{ site.baseurl }}{% link protocol.html %}#_extensible_data_format)
 
 ### Functional Style
 

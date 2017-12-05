@@ -36,13 +36,13 @@ You can support us financially by donating to the following account:
 Synacts GmbH, Neunbrunnenstrasse 33, 8050 Zürich, Switzerland  
 IBAN: CH27 0900 0000 4147 2694 3
 
-[Synacts](https://www.synacts.com) developed the [Digital ID Library]({% link library.md %}).
+[Synacts](https://www.synacts.com) developed the [Digital ID Library]({{ site.baseurl }}{% link library.md %}).
 Unfortunately, we cannot  
 offer a tax-exempt option at the moment.
 
 ## Contributors
 
-The [Digital ID Library]({% link library.md %}) and the [Smart Contacts App]({% link apps.md %}) were written by:
+The [Digital ID Library]({{ site.baseurl }}{% link library.md %}) and the [Smart Contacts App]({{ site.baseurl }}{% link apps.md %}) were written by:
 * Kaspar Etter:
 [Email](mailto:kaspar.etter@digitalid.net),
 [Twitter](https://twitter.com/KasparEtter),
@@ -57,7 +57,7 @@ If you have the necessary expertise and motivation, please join us!
 
 ### Pull Requests
 
-The [Digital ID Library]({% link library.md %}) is available on [GitHub](https://github.com/synacts) under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+The [Digital ID Library]({{ site.baseurl }}{% link library.md %}) is available on [GitHub](https://github.com/synacts) under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 You can [fork](https://help.github.com/articles/about-forks/) our projects and [create pull requests](https://help.github.com/articles/creating-a-pull-request-from-a-fork/). [Contacting](#contact) us before implementing a feature or fixing a bug improves the chances that we integrate the change afterwards, of course.
 
 ### Code of Conduct

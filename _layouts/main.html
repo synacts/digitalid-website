@@ -40,7 +40,7 @@
         <div class="navbar navbar-default navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
-                    <a href="{% link index.html %}" class="navbar-brand">{{ site.title }}</a>
+                    <a href="{{ site.baseurl }}{% link index.html %}" class="navbar-brand">{{ site.title }}</a>
                     <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
@@ -50,7 +50,7 @@
                 <div class="navbar-collapse collapse" id="navbar-main">
                     <ul class="nav navbar-nav">
                         {% assign tabs = site.pages | where_exp: "tab", "tab.order" | sort: "order" %}{% for tab in tabs limit:6 %}
-                        <li class="{% if tab.url == page.url %}active{% endif %}" title="{{ tab.subtitle }}"><a href="{{ tab.url }}">{% if tab.icon %}<span class="glyphicon glyphicon-{{ tab.icon }} hidden-sm"></span>{% endif %}<span>{{ tab.title }}</span></a></li>
+                        <li class="{% if tab.url == page.url %}active{% endif %}" title="{{ tab.subtitle }}"><a href="{{ tab.url | relative_url }}">{% if tab.icon %}<span class="glyphicon glyphicon-{{ tab.icon }} hidden-sm"></span>{% endif %}<span>{{ tab.title }}</span></a></li>
                         {% endfor %}
                     </ul>
                     <ul class="nav navbar-nav navbar-right">

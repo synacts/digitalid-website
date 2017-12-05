@@ -7,7 +7,7 @@ subtitle: Control your personal information with our apps
 
 <div class="alert alert-warning">
     <h4>Warning and Disclaimer</h4>
-    <p>This is an early release of our contacts app to showcase core features of the <a href="{% link protocol.html %}">Digital ID Protocol</a>. While we give our best to safeguard your personal information, we cannot guarantee proper functioning in all situations.</p>
+    <p>This is an early release of our contacts app to showcase core features of the <a href="{{ site.baseurl }}{% link protocol.html %}">Digital ID Protocol</a>. While we give our best to safeguard your personal information, we cannot guarantee proper functioning in all situations.</p>
 </div>
 
 ## Download
@@ -27,6 +27,6 @@ If you would like to be featured here, send your statement to [info@digitalid.ne
 
 ## Privacy
 
-In order to showcase core features of the [Digital ID Protocol]({% link protocol.html %}), the Swiss company [Synacts](https://www.synacts.com) provides [hosting]({% link hosting.md %}) at digitalid.net in accordance with national data protection regulations.
+In order to showcase core features of the [Digital ID Protocol]({{ site.baseurl }}{% link protocol.html %}), the Swiss company [Synacts](https://www.synacts.com) provides [hosting]({{ site.baseurl }}{% link hosting.md %}) at digitalid.net in accordance with national data protection regulations.
 The Smart Contacts app asks its users to provide personal information such as email address, identity and contact data.
 Synacts guarantees that any personal data provided by its users will be processed exclusively for demonstration purposes and that, under no circumstances, this personal data will be commercialized or passed on to third parties who are not directly involved with the development of the mobile application and demo services.

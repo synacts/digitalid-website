@@ -7,6 +7,6 @@ author:
 tags: app
 ---
 
-We're launching our first [mobile app]({% link apps.md %}) today!
+We're launching our first [mobile app]({{ site.baseurl }}{% link apps.md %}) today!
 You can download it for [Android](https://play.google.com/store/apps/details?id=net.digitalid.smartcontacts) now.
 The iOS version is coming soon.

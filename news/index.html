@@ -11,21 +11,21 @@ subtitle: Learn about the most recent Digital ID developments
 {% for post in paginator.posts %}
 <h3 class="post-title"><a href="{{ post.url | relative_url }}">{{ post.title | escape }}</a></h3>
 <p class="post-meta">by {{ post.author.name }} on {{ post.date | date: site.date_format }}</p>
-<p class="post-excerpt">{{ post.excerpt | strip_html | strip_newlines }}</p>
+<p class="post-excerpt">{{ post.excerpt | strip_html }}</p>
 {% endfor %}
 
 {% if paginator.total_pages > 1 %}
 <ul class="pagination pagination-sm">
     <li class="page-item{% unless paginator.previous_page %} disabled{% endunless %}">
-        <a class="page-link" href="{{ paginator.previous_page_path | default: '#' }}">&laquo;</a>
+        <a class="page-link" href="{{ paginator.previous_page_path | relative_url | default: '#' }}">&laquo;</a>
     </li>
     {% for page in (1..paginator.total_pages) %}
     <li class="page-item{% if page == paginator.page %} active{% endif %}">
-        <a class="page-link" href="{% if page == 1 %}{% link news/index.html %}{% else %}{{ site.paginate_path | replace: ':num', page }}{% endif %}">{{ page }}</a>
+        <a class="page-link" href="{{ site.baseurl }}{% if page == 1 %}{% link news/index.html %}{% else %}{{ site.paginate_path | replace: ':num', page }}{% endif %}">{{ page }}</a>
     </li>
     {% endfor %}
     <li class="page-item{% unless paginator.next_page %} disabled{% endunless %}">
-        <a class="page-link" href="{{ paginator.next_page_path | default: '#' }}">&raquo;</a>
+        <a class="page-link" href="{{ paginator.next_page_path | relative_url | default: '#' }}">&raquo;</a>
     </li>
 </ul>
 {% endif %}

@@ -7,7 +7,7 @@ subtitle: Run a Digital ID server and host your data yourself
 
 <div class="alert alert-warning">
     <h4>Warning and Disclaimer</h4>
-    <p>We recommend <strong>not</strong> to run the current Digital ID Server in production. See the <a href="{% link library.md %}#roadmap">roadmap</a> for more information.</p>
+    <p>We recommend <strong>not</strong> to run the current Digital ID Server in production. See the <a href="{{ site.baseurl }}{% link library.md %}#roadmap">roadmap</a> for more information.</p>
 </div>
 
 ## Requirements
@@ -25,7 +25,7 @@ You can check your current version (and whether you already have Java) with `jav
 
 Make sure that you have either [MySQL](https://www.mysql.com) or [MariaDB](https://mariadb.com) installed and that you know the password to access your database.
 [PostgreSQL](https://www.postgresql.org) is not supported in the current version because of locking issues.
-If you have the necessary expertise, we would be thrilled if you could help us [fixing it]({% link community.md %}#contributions).
+If you have the necessary expertise, we would be thrilled if you could help us [fixing it]({{ site.baseurl }}{% link community.md %}#contributions).
 
 ### Domain Name
 
@@ -43,7 +43,7 @@ Make sure that no firewall or router blocks the access and add corresponding exc
 ### Apache Maven
 
 Since this is currently only a test version, you need [Apache Maven](https://maven.apache.org) to build the server from the source code.
-A proper distribution package is planned for the future (and is also something you could [help us]({% link community.md %}#contributions) with).
+A proper distribution package is planned for the future (and is also something you could [help us]({{ site.baseurl }}{% link community.md %}#contributions) with).
 
 ## Installation
 
@@ -128,9 +128,9 @@ You need a separate host for each domain, which can all be run by the same serve
 
 ### Services
 
-At the moment, the functionality of the Digital ID Server cannot be extended with [services]({% link protocol.html %}#services).  
-(This only worked in an [older version]({% link library.md %}#history) of the library.
-See the [roadmap]({% link library.md %}#roadmap) for when this will be supported again.)
+At the moment, the functionality of the Digital ID Server cannot be extended with [services]({{ site.baseurl }}{% link protocol.html %}#services).  
+(This only worked in an [older version]({{ site.baseurl }}{% link library.md %}#history) of the library.
+See the [roadmap]({{ site.baseurl }}{% link library.md %}#roadmap) for when this will be supported again.)
 
 ### Directory
 
@@ -154,7 +154,7 @@ This directory has the following subfolders:
 
 Before clients can connect to your host, you need to have its public key certified.
 Unfortunately, this process is not supported yet, which is one of the main reasons why you should only use the server for testing at the moment.
-Have a look at the [roadmap]({% link library.md %}#roadmap) for more information on this.
+Have a look at the [roadmap]({{ site.baseurl }}{% link library.md %}#roadmap) for more information on this.
 
 ### Deinstallation
 

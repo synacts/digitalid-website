@@ -49,28 +49,21 @@ A proper distribution package is planned for the future (and is also something y
 
 ### Download
 
-Clone the [utility](https://github.com/synacts/digitalid-utility), [database](https://github.com/synacts/digitalid-database) and [core](https://github.com/synacts/digitalid-core) projects from [GitHub](https://github.com/):
+Clone the [maven](https://github.com/synacts/digitalid-maven), [utility](https://github.com/synacts/digitalid-utility), [database](https://github.com/synacts/digitalid-database) and [core](https://github.com/synacts/digitalid-core) projects from [GitHub](https://github.com/):
 
 ```bash
+git clone https://github.com/synacts/digitalid-maven.git
 git clone https://github.com/synacts/digitalid-utility.git
 git clone https://github.com/synacts/digitalid-database.git
 git clone https://github.com/synacts/digitalid-core.git
 ```
 
-### Checkout
-
-Checkout the development branch of each repository as follows:
-```bash
-git -C digitalid-utility checkout development
-git -C digitalid-database checkout development
-git -C digitalid-core checkout development
-```
-
 ### Compilation
 
-Build the source code as follows:
+Build the source code as follows (and in that order):
 
 ```bash
+mvn -f digitalid-maven/pom.xml clean install
 mvn -f digitalid-utility/pom.xml clean install
 mvn -f digitalid-database/pom.xml clean install
 mvn -f digitalid-core/pom.xml clean install

@@ -71,6 +71,7 @@ cd ../digitalid-database
 mvn clean install
 cd ../digitalid-core
 mvn clean install
+cd ..
 ```
 
 ## Execution
@@ -80,7 +81,8 @@ mvn clean install
 The server can be started from the [command line](https://en.wikipedia.org/wiki/Command-line_interface) as follows:
 
 ```bash
-mvn -f digitalid-core/server/pom.xml -q exec:java
+cd digitalid-core/server
+mvn -q exec:java
 ```
 
 If you start the server for the first time, it prompts you to configure the database.

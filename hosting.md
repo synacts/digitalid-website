@@ -63,10 +63,14 @@ git clone https://github.com/synacts/digitalid-core.git
 Build the source code as follows (and in that order):
 
 ```bash
-mvn -f digitalid-maven/pom.xml clean install
-mvn -f digitalid-utility/pom.xml clean install
-mvn -f digitalid-database/pom.xml clean install
-mvn -f digitalid-core/pom.xml clean install
+cd digitalid-maven
+mvn clean install
+cd ../digitalid-utility
+mvn clean install
+cd ../digitalid-database
+mvn clean install
+cd ../digitalid-core
+mvn clean install
 ```
 
 ## Execution

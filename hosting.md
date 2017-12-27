@@ -63,10 +63,15 @@ git clone https://github.com/synacts/digitalid-core.git
 Build the source code as follows (and in that order):
 
 ```bash
-mvn -f digitalid-maven/pom.xml clean install
-mvn -f digitalid-utility/pom.xml clean install
-mvn -f digitalid-database/pom.xml clean install
-mvn -f digitalid-core/pom.xml clean install
+cd digitalid-maven
+mvn clean install
+cd ../digitalid-utility
+mvn clean install
+cd ../digitalid-database
+mvn clean install
+cd ../digitalid-core
+mvn clean install
+cd ..
 ```
 
 ## Execution
@@ -76,7 +81,8 @@ mvn -f digitalid-core/pom.xml clean install
 The server can be started from the [command line](https://en.wikipedia.org/wiki/Command-line_interface) as follows:
 
 ```bash
-mvn -f digitalid-core/server/pom.xml -q exec:java
+cd digitalid-core/server
+mvn -q exec:java
 ```
 
 If you start the server for the first time, it prompts you to configure the database.

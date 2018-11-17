@@ -1,3 +1,3 @@
 # Digital ID Website
 
-This project contains the [www.digitalid.net](http://www.digitalid.net/) website.
+This project contains the [www.digitalid.net](https://www.digitalid.net/) website.
